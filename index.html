@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SmokSigu | Infernal Altar</title>
+    <style>
+        :root {
+            --main-red: #ff0000;
+            --dark-bg: #000000;
+            --tg-blue: #0088cc;
+            --stone-texture: url('https://www.transparenttextures.com/patterns/dark-dotted-2.png');
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--dark-bg);
+            background-image: var(--stone-texture);
+            color: var(--main-red);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .fire-bg {
+            position: absolute;
+            bottom: -20px; left: 0; width: 100%; height: 50vh;
+            background: linear-gradient(0deg, rgba(255,60,0,0.4) 0%, rgba(255,0,0,0.15) 50%, rgba(0,0,0,0) 100%);
+            filter: blur(40px);
+            opacity: 0.2;
+            z-index: -1;
+            animation: firePulse 6s infinite alternate;
+        }
+
+        .runes-circle {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 700px; height: 700px;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            animation: rotateRunes 100s linear infinite;
+            pointer-events: none;
+        }
+
+        @media (max-width: 600px) {
+            .runes-circle { width: 450px; height: 450px; }
+            h1 { font-size: 1.8rem !important; }
+            .btn { padding: 15px !important; font-size: 1rem !important; }
+        }
+
+        .runes-text {
+            font-size: 18px;
+            color: var(--main-red);
+            opacity: 0.12;
+            filter: drop-shadow(0 0 8px var(--main-red));
+        }
+
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.95) 100%);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 0.4s ease-out;
+            position: relative;
+            z-index: 10;
+        }
+
+        .screen.active { display: flex; }
+
+        h1 {
+            font-size: 2.2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px var(--main-red);
+        }
+
+        .btn {
+            padding: 20px;
+            border: 2px solid var(--main-red);
+            color: var(--main-red);
+            background: rgba(0,0,0,0.7);
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:active { transform: scale(0.95); background: var(--main-red); color: #000; }
+        
+        @media (min-width: 1024px) {
+            .btn:hover { background: var(--main-red); color: #000; box-shadow: 0 0 40px var(--main-red); transform: scale(1.02); }
+        }
+
+        .btn-tg { border-color: var(--tg-blue); color: var(--tg-blue); }
+
+        .qr-box {
+            background: white; padding: 12px; border-radius: 8px;
+            margin: 5px auto; width: 180px; height: 180px;
+        }
+        .qr-box img { width: 100%; height: 100%; }
+
+        .addr-display {
+            background: #111; border: 1px dashed #444; padding: 12px;
+            font-family: monospace; font-size: 0.85rem; word-break: break-all;
+            margin-top: 10px; cursor: pointer;
+        }
+
+        .back-link { margin-top: 30px; font-size: 0.8rem; color: #555; text-transform: uppercase; cursor: pointer; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes firePulse { from { opacity: 0.15; } to { opacity: 0.3; } }
+        @keyframes rotateRunes { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="fire-bg"></div>
+    <div class="runes-circle" id="runes-target"></div>
+
+    <div id="screen-main" class="screen active">
+        <h1>SMOKSIGU ALTAR</h1>
+        <a href="https://t.me/SmokSigu_donation_bot" target="_blank" class="btn btn-tg" onclick="logClick('telegram')">🔥 Telegram Stars</a>
+        <a href="https://www.donationalerts.com/r/smoksigu" target="_blank" class="btn" onclick="logClick('donation-alerts')">💀 DonationAlerts</a>
+        <div class="btn" onclick="logClick('crypto-menu'); showScreen('screen-crypto')">💎 Crypto Offering</div>
+    </div>
+
+    <div id="screen-crypto" class="screen">
+        <h1>SELECT COIN</h1>
+        <div class="btn" onclick="logClick('usdt'); showQR('USDT (TRC-20)', 'TDu6CEzb17UcRgtXac9A1KK4wtT66kndEB')">💵 USDT (TRC-20)</div>
+        <div class="btn" onclick="logClick('ton'); showQR('TON', 'UQCRFCD3EUhWJTQfIY8gmiqlS57jZCj8NuXuK-6p_ONckpvV')">💎 TON</div>
+        <div class="btn" onclick="logClick('trx'); showQR('TRX', 'TDu6CEzb17UcRgtXac9A1KK4wtT66kndEB')">🔴 TRON (TRX)</div>
+        <div class="back-link" onclick="showScreen('screen-main')"><- НАЗАД</div>
+    </div>
+
+    <div id="screen-qr" class="screen">
+        <h1 id="coin-title">COIN</h1>
+        <div class="qr-box" id="qr-target"></div>
+        <div class="addr-display" id="addr-text" onclick="copyToClipboard()">ЗАГРУЗКА...</div>
+        <div class="back-link" onclick="showScreen('screen-crypto')"><- К МОНЕТАМ</div>
+    </div>
+
+    <script>
+        // Функция для логов в консоль сервера
+        function logClick(type) {
+            fetch('/click-' + type).catch(() => {});
+        }
+
+        const runes = "ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚻᚾᛁᛃᛇᛈᛉᛊᛋᛏᛒᛖᛗᛚᛜᛝᛟᛞ";
+        const target = document.getElementById('runes-target');
+        const isMobile = window.innerWidth < 600;
+        const radius = isMobile ? 210 : 340;
+        const count = isMobile ? 25 : 45;
+
+        for (let i = 0; i < count; i++) {
+            const r = document.createElement('div');
+            r.className = 'runes-text';
+            r.innerText = runes[i % runes.length];
+            r.style.position = 'absolute';
+            const angle = (i / count) * Math.PI * 2;
+            const x = Math.sin(angle) * radius + radius;
+            const y = -Math.cos(angle) * radius + radius;
+            r.style.left = x + 'px';
+            r.style.top = y + 'px';
+            r.style.transform = `rotate(${angle * 180 / Math.PI}deg)`;
+            target.appendChild(r);
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function showQR(name, addr) {
+            document.getElementById('coin-title').innerText = name;
+            document.getElementById('addr-text').innerText = addr;
+            const url = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(addr)}`;
+            document.getElementById('qr-target').innerHTML = `<img src="${url}" alt="QR">`;
+            showScreen('screen-qr');
+        }
+
+        function copyToClipboard() {
+            const txt = document.getElementById('addr-text');
+            navigator.clipboard.writeText(txt.innerText);
+            logClick('copy-address');
+            const old = txt.innerText;
+            txt.innerText = "СКОПИРОВАНО!";
+            setTimeout(() => { txt.innerText = old; }, 1000);
+        }
+    </script>
+</body>
+</html>
