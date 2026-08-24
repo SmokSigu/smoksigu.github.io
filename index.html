@@ -8,7 +8,6 @@
         :root {
             --main-red: #ff0000;
             --dark-bg: #000000;
-            --tg-blue: #0088cc;
             --stone-texture: url('https://www.transparenttextures.com/patterns/dark-dotted-2.png');
         }
 
@@ -116,8 +115,6 @@
             .btn:hover { background: var(--main-red); color: #000; box-shadow: 0 0 40px var(--main-red); transform: scale(1.02); }
         }
 
-        .btn-tg { border-color: var(--tg-blue); color: var(--tg-blue); }
-
         .qr-box {
             background: white; padding: 12px; border-radius: 8px;
             margin: 5px auto; width: 180px; height: 180px;
@@ -151,9 +148,8 @@
     <!-- ГЛАВНЫЙ ЭКРАН -->
     <div id="screen-main" class="screen active">
         <h1>SMOKSIGU ALTAR</h1>
-        <a href="https://t.me/SmokSigu_donation_bot" target="_blank" class="btn btn-tg">🔥 Telegram Stars</a>
         <a href="https://www.donationalerts.com/r/smoksigu" target="_blank" class="btn">💀 DonationAlerts</a>
-        <div class="btn" onclick="showScreen('screen-crypto')">💎 Crypto Offering</div>
+        <div class="btn" onclick="showScreen('screen-crypto')">💎 Crypto Donation</div>
         <div class="btn" onclick="showScreen('screen-card')">💳 UAH CARD</div>
     </div>
 
@@ -165,8 +161,8 @@
         
         <div style="margin-top: 20px;">
             <input type="text" id="nick-card" class="input-altar" placeholder="ТВОЙ НИК">
-            <textarea id="msg-card" class="input-altar" rows="2" placeholder="О ЧЕМ ПОДНОШЕНИЕ?"></textarea>
-            <button class="btn" style="width: 100%; margin-top: 10px;" onclick="sendRitual('card')">ОТПРАВИТЬ ПОДНОШЕНИЕ</button>
+            <textarea id="msg-card" class="input-altar" rows="2" placeholder="Сообщение стримеру"></textarea>
+            <button class="btn" style="width: 100%; margin-top: 10px;" onclick="sendDonation('card')">ОТПРАВИТЬ ДОНАТ</button>
         </div>
         <div class="back-link" onclick="showScreen('screen-main')"><- НАЗАД</div>
     </div>
@@ -188,8 +184,8 @@
         
         <div style="margin-top: 15px;">
             <input type="text" id="nick-crypto" class="input-altar" placeholder="ТВОЙ НИК">
-            <textarea id="msg-crypto" class="input-altar" rows="2" placeholder="О ЧЕМ ПОДНОШЕНИЕ?"></textarea>
-            <button class="btn" style="width: 100%; margin-top: 10px;" onclick="sendRitual('crypto')">ОТПРАВИТЬ ПОДНОШЕНИЕ</button>
+            <textarea id="msg-crypto" class="input-altar" rows="2" placeholder="Сообщение стримеру"></textarea>
+            <button class="btn" style="width: 100%; margin-top: 10px;" onclick="sendDonation('crypto')">ОТПРАВИТЬ ДОНАТ</button>
         </div>
         <div class="back-link" onclick="showScreen('screen-crypto')"><- К МОНЕТАМ</div>
     </div>
@@ -247,22 +243,21 @@
         }
 
         // ОТПРАВКА В ТЕЛЕГРАМ
-        function sendRitual(type) {
+        function sendDonation(type) {
             const nick = document.getElementById(`nick-${type}`).value;
             const msg = document.getElementById(`msg-${type}`).value;
 
             if(!nick || !msg) return alert('ЗАПОЛНИ ПОЛЯ, ГРЕШНИК!');
 
-            // Твои данные из image_a118de.png (без пробелов)
             const token = '8843044750:AAE2oDK0n5ZQZ4n8Zmyv2jtl4aBp0Z_r3_Q';
             const chatId = '8354197397';
             
-            const text = `💀 ПОДНОШЕНИЕ (${type.toUpperCase()})\n👤 От: ${nick}\n📜 Суть: ${msg}`;
+            const text = `💀 ДОНАТ (${type.toUpperCase()})\n👤 От: ${nick}\n💬 Сообщение стримеру: ${msg}`;
 
             fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}`)
             .then(response => {
                 if(response.ok) {
-                    alert('ПОДНОШЕНИЕ УШЛО В БЕЗДНУ!');
+                    alert('ДОНАТ УШЕЛ В БЕЗДНУ!');
                     document.getElementById(`nick-${type}`).value = '';
                     document.getElementById(`msg-${type}`).value = '';
                 } else {
